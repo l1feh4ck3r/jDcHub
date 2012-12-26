@@ -27,7 +27,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.client.AbstractClient;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Vector;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -88,7 +90,7 @@ public class Broadcast
     {
         for (AbstractClient toClient : ClientManager.getInstance().getClients())
         {
-            pool.submit(new MessageSender(message, fromClient, toClient));
+            pool.execute(new MessageSender(message, fromClient, toClient));
         }
     }
 
@@ -114,7 +116,7 @@ public class Broadcast
     {
         for (AbstractClient toClient : ClientManager.getInstance().getClients())
         {
-            pool.submit(new MessageSender(message,
+            pool.execute(new MessageSender(message,
                                           fromClient,
                                           toClient,
                                           requiredFeatures,
