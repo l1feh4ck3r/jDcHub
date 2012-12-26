@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.client.AbstractClient;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
@@ -86,16 +87,31 @@ public class Broadcast
      * @param message raw adc command
      * @param fromClient wich client sends command
      */
-    public synchronized void broadcast(String message, AbstractClient fromClient)
+    public void broadcast(String message, AbstractClient fromClient)
     {
+        Collection messageSenders = new ArrayList(ClientManager.getInstance().getClientsCount() + 10);
+
         for (AbstractClient toClient : ClientManager.getInstance().getClients())
         {
-            pool.execute(new MessageSender(message, fromClient, toClient));
+            messageSenders.add(new MessageSender(message, fromClient, toClient));
+        }
+
+        try
+        {
+            pool.invokeAny(messageSenders);
+        }
+        catch (InterruptedException e)
+        {
+            log.error("Execution of message senders have been interrupted because of exception: " + e.toString());
+        }
+        catch (ExecutionException e)
+        {
+            log.error("Submited message senders have been not executed because of exception: " + e.toString());
         }
     }
 
 
-    public synchronized void broadcast(String message, int state)
+    public void broadcast(String message, int state)
     {
         broadcast(message, null);
     }
@@ -114,13 +130,28 @@ public class Broadcast
                                   List<String> requiredFeatures,
                                   List<String> excludedFeatures)
     {
+        Collection messageSenders = new ArrayList(ClientManager.getInstance().getClientsCount() + 10);
+
         for (AbstractClient toClient : ClientManager.getInstance().getClients())
         {
-            pool.execute(new MessageSender(message,
-                                          fromClient,
-                                          toClient,
-                                          requiredFeatures,
-                                          excludedFeatures));
+            messageSenders.add(new MessageSender(message,
+                                           fromClient,
+                                           toClient,
+                                           requiredFeatures,
+                                           excludedFeatures));
+        }
+
+        try
+        {
+            pool.invokeAny(messageSenders);
+        }
+        catch (InterruptedException e)
+        {
+            log.error("Execution of message senders have been interrupted because of exception: " + e.toString());
+        }
+        catch (ExecutionException e)
+        {
+            log.error("Submited message senders have been not executed because of exception: " + e.toString());
         }
     }
 
