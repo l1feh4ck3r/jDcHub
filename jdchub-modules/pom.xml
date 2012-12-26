@@ -23,6 +23,7 @@
         <module>WebManagementConsole</module>
         <module>ChatBot</module>
         <module>FEED</module>
+        <module>RabbitBot</module>
     </modules>
 
     <properties>
