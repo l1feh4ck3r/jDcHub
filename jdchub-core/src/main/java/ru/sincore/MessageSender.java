@@ -14,13 +14,12 @@ package ru.sincore;
 import ru.sincore.client.AbstractClient;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 /**
  * @author Alexey 'lh' Antonov
  * @since 2012-09-05
  */
-class MessageSender implements Callable
+class MessageSender implements Runnable
 {
     private String            message = "";
     private AbstractClient fromClient = null;
@@ -97,14 +96,5 @@ class MessageSender implements Callable
 
             toClient.sendRawCommand(message);
         }
-    }
-
-
-    @Override
-    public Object call()
-            throws Exception
-    {
-        this.run();
-        return null;
     }
 }

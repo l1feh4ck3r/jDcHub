@@ -89,24 +89,9 @@ public class Broadcast
      */
     public synchronized void broadcast(String message, AbstractClient fromClient)
     {
-        Collection messageSenders = new ArrayList(ClientManager.getInstance().getClientsCount() + 10);
-
         for (AbstractClient toClient : ClientManager.getInstance().getClients())
         {
-            messageSenders.add(new MessageSender(message, fromClient, toClient));
-        }
-
-        try
-        {
-            pool.invokeAny(messageSenders);
-        }
-        catch (InterruptedException e)
-        {
-            log.error("Execution of message senders have been interrupted because of exception: " + e.toString());
-        }
-        catch (ExecutionException e)
-        {
-            log.error("Submited message senders have been not executed because of exception: " + e.toString());
+            pool.execute(new MessageSender(message, fromClient, toClient));
         }
     }
 
@@ -130,28 +115,13 @@ public class Broadcast
                                   List<String> requiredFeatures,
                                   List<String> excludedFeatures)
     {
-        Collection messageSenders = new ArrayList(ClientManager.getInstance().getClientsCount() + 10);
-
         for (AbstractClient toClient : ClientManager.getInstance().getClients())
         {
-            messageSenders.add(new MessageSender(message,
+            pool.execute(new MessageSender(message,
                                            fromClient,
                                            toClient,
                                            requiredFeatures,
                                            excludedFeatures));
-        }
-
-        try
-        {
-            pool.invokeAny(messageSenders);
-        }
-        catch (InterruptedException e)
-        {
-            log.error("Execution of message senders have been interrupted because of exception: " + e.toString());
-        }
-        catch (ExecutionException e)
-        {
-            log.error("Submited message senders have been not executed because of exception: " + e.toString());
         }
     }
 
