@@ -21,16 +21,19 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Messages
 {
-    private static final Logger log = Logger.getLogger(Messages.class);
-    private static final ConfigurationManager configurationManager = ConfigurationManager.getInstance();
-    private static final String defaultLocale = configurationManager.getString(ConfigurationManager.HUB_DEFAULT_LOCALE);
+    private static final Logger               log                  =
+            Logger.getLogger(Messages.class);
+    private static final ConfigurationManager configurationManager =
+            ConfigurationManager.getInstance();
+    private static final String               defaultLocale        =
+            configurationManager.getString(ConfigurationManager.HUB_DEFAULT_LOCALE);
 
     // define server message var
     private static final String SERVER_MESSAGE_RESOURCE  = "servermessages";
     private static final String SERVER_MESSAGE_DIRECTORY = "messages/";
 
     // Server messages
-    public static final String SERVER_MESSAGE_STUB    = "core.server.message.stub";
+    public static final String SERVER_MESSAGE_STUB = "core.server.message.stub";
     public static final String RESTART_HUB            = "core.server.message.restart_hub";
     public static final String CLOSE_HUB              = "core.server.message.close_hub";
     public static final String ACCOUNT_REGISTER       = "core.server.message.account_register";
@@ -125,6 +128,7 @@ public class Messages
     public static final String TOO_FAST_CHATTING      = "core.hub.chat.too_fast_chatting";
     public static final String SAME_MESSAGE_FLOOD     = "core.hub.chat.same_message_flood";
     public static final String SAME_MESSAGE_FLOOD_DETECTED = "core.hub.chat.same_message_flood_detected";
+    public static final String YOU_ARE_NOW_GAGED_MESSAGE= "core.hub.chat.you_are_now_gaged_message";
 
     public static final String TOO_FAST_SEARCHING     = "core.hub.search.too_fast_searching";
 

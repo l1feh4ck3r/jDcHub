@@ -171,6 +171,7 @@ core.commands.module.module_not_stopped = Модуль {0} не остановл
 core.hub.chat.too_fast_chatting = Вы отправляете сообщения слишком часто! Успокойтесь, пожалуйста.
 core.hub.chat.same_message_flood = Хватит флудить или получите бан!
 core.hub.chat.same_message_flood_detected = Обнаружен флуд от пользователя: {0}.
+core.hub.chat.you_are_now_gaged_message = На Вас наложена молчанка. Теперь Вы не можете писать сообщения в чат.
 
 core.hub.search.too_fast_searching = Слишком частые поисковые запросы.
 

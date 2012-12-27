@@ -56,7 +56,10 @@ public class MSGHandler extends AbstractActionHandler<MSG>
             if (parseAndExecuteCommandInMessage())
                 return;
 
-            detectSpamFlood();
+            if (detectSpamFlood())
+            {
+                return;
+            }
 
             Pipeline<MSG> pipeline = PipelineFactory.getPipeline("MSG");
 
@@ -115,12 +118,14 @@ public class MSGHandler extends AbstractActionHandler<MSG>
     }
 
 
-    private void detectSpamFlood()
+    private boolean detectSpamFlood()
             throws CommandException
     {
         if (client.checkMute())
         {
-            return;
+            client.sendPrivateMessageFromHub(Messages.get(Messages.YOU_ARE_NOW_GAGED_MESSAGE,
+                                                          client.getExtendedField("LC")));
+            return true;
         }
 
 
@@ -130,7 +135,7 @@ public class MSGHandler extends AbstractActionHandler<MSG>
         {
             client.sendPrivateMessageFromHub(Messages.get(Messages.TOO_FAST_CHATTING,
                                                           client.getExtendedField("LC")));
-            return;
+            return true;
         }
 
 
@@ -151,13 +156,15 @@ public class MSGHandler extends AbstractActionHandler<MSG>
             // emit signal about same message flood detection
             Signal.emit(new SameMessageFloodDetectedSignal(client, action.getRawCommand()));
 
-            return;
+            return true;
         }
 
         client.setLastRawMSG(action.getRawCommand());
 
         // save message timestamp
         client.setLastMSG(this.getMessageRecieveTime());
+
+        return false;
     }
 
 
