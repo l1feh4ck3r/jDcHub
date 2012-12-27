@@ -22,6 +22,7 @@
 
 package jdchub.module;
 
+import com.rabbitmq.client.AlreadyClosedException;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -53,9 +54,9 @@ import java.util.Locale;
 @Slf4j
 public class RabbitBot extends Bot
 {
-    private final static String QUEUE_NAME = "chat";
-    private Connection connection = null;
-    private Channel channel = null;
+    private final static String     EXCHANGE_NAME = "chat";
+    private              Connection connection    = null;
+    private              Channel    channel       = null;
 
 
     public RabbitBot()
@@ -90,7 +91,8 @@ public class RabbitBot extends Bot
         {
             connection = factory.newConnection();
             channel = connection.createChannel();
-            channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+            //channel.queueDeclare(EXCHANGE_NAME, false, false, false, null);
+            channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
         }
         catch (IOException e)
         {
@@ -109,6 +111,10 @@ public class RabbitBot extends Bot
         catch (IOException e)
         {
             log.error("Error in rabbit deinit : " + e.toString());
+        }
+        catch (AlreadyClosedException e)
+        {
+            //ignore
         }
     }
 
@@ -155,7 +161,7 @@ public class RabbitBot extends Bot
                 JSONWriter writer = new JSONWriter(false);
                 String jsonMessage = writer.write(messageInfo);
 
-                channel.basicPublish("", QUEUE_NAME, null, jsonMessage.getBytes());
+                channel.basicPublish(EXCHANGE_NAME, "", null, jsonMessage.getBytes());
             }
             catch (Exception e)
             {
