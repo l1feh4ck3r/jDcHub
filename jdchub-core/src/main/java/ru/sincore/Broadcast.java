@@ -61,12 +61,8 @@ public class Broadcast
     {
         //pool = Executors.newCachedThreadPool();
         ConfigurationManager configurationManager = ConfigurationManager.getInstance();
-        pool = new ThreadPoolExecutor(configurationManager.getInt(ConfigurationManager.THREADS_CORE_POOL_SIZE),
-                                      configurationManager.getInt(ConfigurationManager.THREADS_MAXIMUM_POOL_SIZE),
-                                      configurationManager.getLong(ConfigurationManager.THREADS_KEEP_ALIVE_TIME), TimeUnit.SECONDS,
-                                      new SynchronousQueue<Runnable>(),
-                                      new BroadcastThreadFactory());
-
+        pool = Executors.newFixedThreadPool(configurationManager.getInt(ConfigurationManager.THREADS_MAXIMUM_POOL_SIZE),
+                                            new BroadcastThreadFactory());
     }
 
 
