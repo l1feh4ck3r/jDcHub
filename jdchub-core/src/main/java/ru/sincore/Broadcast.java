@@ -87,7 +87,7 @@ public class Broadcast
      * @param message raw adc command
      * @param fromClient wich client sends command
      */
-    public void broadcast(String message, AbstractClient fromClient)
+    public synchronized void broadcast(String message, AbstractClient fromClient)
     {
         Collection messageSenders = new ArrayList(ClientManager.getInstance().getClientsCount() + 10);
 
@@ -111,7 +111,7 @@ public class Broadcast
     }
 
 
-    public void broadcast(String message, int state)
+    public synchronized void broadcast(String message, int state)
     {
         broadcast(message, null);
     }
@@ -125,7 +125,7 @@ public class Broadcast
      * @param requiredFeatures      required features list
      * @param excludedFeatures      excluded features list
      */
-    public void featuredBroadcast(String message,
+    public synchronized void featuredBroadcast(String message,
                                   AbstractClient fromClient,
                                   List<String> requiredFeatures,
                                   List<String> excludedFeatures)
