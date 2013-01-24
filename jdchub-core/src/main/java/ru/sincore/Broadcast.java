@@ -26,13 +26,10 @@ package ru.sincore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.client.AbstractClient;
+import ru.sincore.util.NamedThreadFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Vector;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Provides broadcasts and feature broadcasts constructors to all connected
@@ -62,7 +59,7 @@ public class Broadcast
         //pool = Executors.newCachedThreadPool();
         ConfigurationManager configurationManager = ConfigurationManager.getInstance();
         pool = Executors.newFixedThreadPool(configurationManager.getInt(ConfigurationManager.THREADS_MAXIMUM_POOL_SIZE),
-                                            new BroadcastThreadFactory());
+                                            new NamedThreadFactory("broadcast"));
     }
 
 
@@ -120,39 +117,4 @@ public class Broadcast
                                            excludedFeatures));
         }
     }
-
-    /**
-     * The broadcast thread factory based on default thread factory
-     */
-    static class BroadcastThreadFactory implements ThreadFactory {
-        static final AtomicInteger poolNumber = new AtomicInteger(1);
-        final ThreadGroup group;
-        final AtomicInteger threadNumber = new AtomicInteger(1);
-        final String namePrefix;
-
-
-        BroadcastThreadFactory()
-        {
-            SecurityManager s = System.getSecurityManager();
-            group = (s != null) ? s.getThreadGroup() :
-                    Thread.currentThread().getThreadGroup();
-            namePrefix = "broadcast-" +
-                         poolNumber.getAndIncrement() +
-                         "-thread-";
-        }
-
-
-        public Thread newThread(Runnable r)
-        {
-            Thread t = new Thread(group, r,
-                                  namePrefix + threadNumber.getAndIncrement(),
-                                  0);
-            if (t.isDaemon())
-                t.setDaemon(false);
-            if (t.getPriority() != Thread.NORM_PRIORITY)
-                t.setPriority(Thread.NORM_PRIORITY);
-            return t;
-        }
-    }
-
 }
